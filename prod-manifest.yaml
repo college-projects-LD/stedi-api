@@ -3,28 +3,28 @@
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  name: stedi-prod
+  name: prod-stedi-landon
 spec:
   replicas: 1
   selector:
     matchLabels:
-      app: stedi-prod
+      app: prod-stedi-landon
   template:
     metadata:
       labels:
-        app: stedi-prod
+        app: prod-stedi-landon
     spec:
       containers:
-        - name: stedi-prod
-          image: gcr.io/cubs-consulting/stedi
+        - name: prod-stedi-landon
+          image: gcr.io/cubs-consulting/stedi #NEEDS TO REFERNCE THE NEW UNCREATED ARTIFACT REPO
           env:
             - name: REDIS_PASSWORD
               valueFrom:
                 secretKeyRef:
-                  name: redis-secrets-prod
+                  name: redis-secrets-landon
                   key: REDIS_PASS
             - name: REDIS_HOST
-              value: "redis-stedi-prod"
+              value: "redis-secrets-landon"
             - name: REDIS_PORT
               value: "6379"
             - name: REDIS_DB
@@ -46,27 +46,15 @@ spec:
               port: 4567
             initialDelaySeconds: 3
             periodSeconds: 3
----
-apiVersion: v1
-kind: Service
-metadata:
-  name: stedi-prod-service
-spec:
-  selector:
-    app: stedi-prod
-  ports:
-    - protocol: TCP
-      port: 80
-      targetPort: 4567
 
 ---
 apiVersion: v1
 kind: Service
 metadata:
-  name: stedi-prod-nodeport
+  name: prod-stedi-landon-nodeport
 spec:
   selector:
-    app: stedi-prod
+    app: prod-stedi-landon
   type: NodePort
   ports:
     - port: 80
@@ -75,10 +63,10 @@ spec:
 apiVersion: networking.k8s.io/v1
 kind: Ingress
 metadata:
-  name: stedi-prod-ingress
+  name: landon-stedi-prod-ingress
   annotations:
-    kubernetes.io/ingress.global-static-ip-name: stedi-prod-public
-    networking.gke.io/managed-certificates: stedi-prod-certificate
+    kubernetes.io/ingress.global-static-ip-name: prod-stedi-landon-public #NOT BEEN CREATED YET
+    networking.gke.io/managed-certificates: prod-stedi-landon-certificate
     # kubernetes.io/ingress.allow-http: "false"
 spec:
   rules:
@@ -88,15 +76,15 @@ spec:
         pathType: Prefix
         backend:
           service:
-            name: stedi-prod-nodeport
+            name: prod-stedi-landon-nodeport #NEEDS TO MATCH LINE 53
             port:
               number: 80
 ---
 apiVersion: networking.gke.io/v1
 kind: ManagedCertificate
 metadata:
-  name: stedi-prod-certificate
+  name: prod-stedi-landon-certificate #NEEDS TO MATCH LINE 68
 spec:
   domains:
-    - stedi.me
+    - landon.cit262.com # this is a dns record and hasn't been made yet- we need to make it first
     

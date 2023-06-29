@@ -17,29 +17,29 @@ spec:
 # Matchlabels are a label for my selector  
     matchLabels:
 # App is a specific kind of label for my pod
-      app: stedi
+      app: dev-stedi-landon
 # The Template describes all the features of my pod
   template:
 # The metadata provides labels for my template  
     metadata:
       labels:
-        app: stedi
+        app: dev-stedi-landon
 # The spec refers to the specification of my containers in my pod        
     spec:
 # Containers can have one or more Docker containers in the pod
       containers:
 # The name of the container is specified below      
-        - name: stedi
+        - name: dev-stedi-landon
 # The image is a prebuilt file containing the operating system        
-          image: gcr.io/cubs-consulting/stedi:latest
+          image: gcr.io/cubs-consulting/dev-stedi-landon:latest # WILL NEED TO BE artifact registry new repo
           env:
             - name: REDIS_PASSWORD
               valueFrom:
                 secretKeyRef:
-                  name: redis-secrets-dev
+                  name: redis-secrets-landon
                   key: REDIS_PASS
             - name: REDIS_HOST
-              value: "redis-stedi-dev"
+              value: "redis-stedi-landon"
             - name: REDIS_PORT
               value: "6379"
             - name: REDIS_DB
@@ -88,28 +88,16 @@ spec:
             initialDelaySeconds: 3
 # periodSeconds tells Kubernetes how often to check health            
             periodSeconds: 3
----
-apiVersion: v1
-kind: Service
-metadata:
-  name: stedi-service
-spec:
-  selector:
-    app: stedi
-  ports:
-    - protocol: TCP
-      port: 80
-      targetPort: 4567
 
 ---
 apiVersion: v1
 kind: Service
 metadata:
-  name: stedi-nodeport
+  name: dev-stedi-landon-loadbalancer
 spec:
   selector:
-    app: stedi
-  type: NodePort
+    app: dev-stedi-landon
+  type: LoadBalancer
   ports:
     - port: 80
       targetPort: 4567
