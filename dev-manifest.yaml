@@ -31,7 +31,7 @@ spec:
 # The name of the container is specified below      
         - name: dev-stedi-landon
 # The image is a prebuilt file containing the operating system        
-          image: gcr.io/cubs-consulting/dev-stedi-landon:latest # WILL NEED TO BE artifact registry new repo
+          image: us-docker.pkg.dev/group3-iam-project/landon-api/stedi-api:latest # WILL NEED TO BE artifact registry new repo
           env:
             - name: REDIS_PASSWORD
               valueFrom:
@@ -49,7 +49,7 @@ spec:
             - name: TWILIO_ACCOUNT_SID
               valueFrom:
                 secretKeyRef:
-                  name: twilio-dev
+                  name: landon-twilio-dev
                   key: twilio_account_sid
             - name: TWILIO_AUTH_TOKEN
               valueFrom:
