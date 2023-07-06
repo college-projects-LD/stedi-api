@@ -8,7 +8,7 @@ kind: Deployment
 # Metadata is information related to the object we created in Kubernetes
 metadata:
 # The name here is the name of our deployment  
-  name: stedi
+  name: dev-stedi-landon
 spec:
 # Replicas refers to the number of pods we deploy
   replicas: 1
